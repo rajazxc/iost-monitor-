@@ -1,10 +1,11 @@
-import time
-import requests
-import discord
-import os
-TOKEN = os.getenv("token")
-CHANNEL_ID = 1525844373038825663
-ADDRESS = "iostcoinsa"
+import json
+
+with open("config.json", "r") as f:
+    config = json.load(f)
+
+TOKEN = config["token"]
+CHANNEL_ID = int(config["channel_id"])
+ADDRESS = config["account"]
 
 API = f"https://l2-scan.iost.io/api/addresses/{ADDRESS}/transactions"
 
