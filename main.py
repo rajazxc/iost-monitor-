@@ -1,8 +1,8 @@
 import time
 import requests
 import discord
-
-TOKEN = "MTUyNzMzNjg4NDc2NDkzODQzMg.Gv0tJj.rLIoGywbaOnGspxZ-XkV0eWgtY1Tkhiw3HQlDo"
+import os
+TOKEN = os.getenv("TOKEN")
 CHANNEL_ID = 1525844373038825663
 ADDRESS = "iostcoinsa"
 
