@@ -6,7 +6,7 @@ import json
 with open("config.json", "r") as f:
     config = json.load(f)
 
-TOKEN = config["discord_token"]
+TOKEN = config["token"]
 CHANNEL_ID = int(config["channel_id"])
 ADDRESS = config["account"]
 
