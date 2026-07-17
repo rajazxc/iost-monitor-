@@ -2,7 +2,7 @@ import time
 import requests
 import discord
 
-TOKEN = "MTUyNzMzNjg4NDc2NDkzODQzMg.GNrzqT.yXuxIoVQhLp1d2ija3h6OMkDQ53-xwZ-tmYmgg"
+TOKEN = "MTUyNzMzNjg4NDc2NDkzODQzMg.Gdu4_O.w-CiIYEVoVJPbPIWMplbsTPDUBOWFXEiOmM4W8"
 CHANNEL_ID = 1525844373038825663
 ADDRESS = "iostcoinsa"
 
