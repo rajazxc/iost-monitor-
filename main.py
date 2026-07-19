@@ -6,7 +6,7 @@ import json
 with open("config.json", "r") as f:
     config = json.load(f)
 
-TOKEN = config["token"]
+DISCORD_TOKEN = config["discord_token"]
 CHANNEL_ID = int(config["channel_id"])
 ADDRESS = config["account"]
 
@@ -53,4 +53,4 @@ async def on_ready():
 
         time.sleep(10)
 
-client.run(TOKEN)
+client.run(DISCORD_TOKEN)
