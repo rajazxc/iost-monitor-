@@ -53,4 +53,4 @@ async def on_ready():
 
         time.sleep(10)
 
-client.run(TOKEN)
+client.run(token)
