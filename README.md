@@ -1,6 +1,6 @@
 # IOST Monitor Bot (Discord)
 
-Yeh bot IOST blockchain ke transactions monitor karta hai aur Discord channel me real-time alert bhejta hai.
+This bot monitors IOST blockchain transactions and sends real-time alerts to a Discord channel.
 
 ## Features
 
@@ -10,11 +10,18 @@ Yeh bot IOST blockchain ke transactions monitor karta hai aur Discord channel me
 
 ## Setup
 
-1. config.json me details daalo
-2. pip install -r requirements.txt
-3. python main.py
+1. Add your details to `config.json`.
+2. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Run the bot:
+   ```bash
+   python main.py
+   ```
 
 ## Note
 
-IOST API free use ke liye:
+You can use the free IOST API at:
+
 https://api.iost.io
