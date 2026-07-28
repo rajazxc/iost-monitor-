@@ -3,7 +3,6 @@ import requests
 import time
 import json
 
-print(DISCORD_TOKEN[:10])
 with open("config.json", "r") as f:
     config = json.load(f)
 
@@ -55,3 +54,4 @@ async def on_ready():
         time.sleep(10)
 
 client.run(DISCORD_TOKEN)
+print(DISCORD_TOKEN[:10])
