@@ -19,4 +19,3 @@ print(repr(DISCORD_TOKEN))
 print(len(DISCORD_TOKEN))
 
 client.run(DISCORD_TOKEN)
-client.run(DISCORD_TOKEN)
