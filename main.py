@@ -3,6 +3,7 @@ import requests
 import time
 import json
 
+print(DISCORD_TOKEN[:10])
 with open("config.json", "r") as f:
     config = json.load(f)
 
