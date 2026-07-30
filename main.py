@@ -1,13 +1,11 @@
 import discord
+import os
 import requests
 import json
 
-with open("config.json", "r") as f:
-    config = json.load(f)
-
-DISCORD_TOKEN = config["discord_token"]
-CHANNEL_ID = int(config["channel_id"])
-ADDRESS = config["account"]
+DISCORD_TOKEN = os.environ.get("discord_token")
+CHANNEL_ID = int(os.environ.get("channel_id", 0))
+ADDRESS = os.environ.get("account")
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -15,7 +13,8 @@ client = discord.Client(intents=intents)
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user}")
-print(repr(DISCORD_TOKEN))
-print(len(DISCORD_TOKEN))
 
-client.run(DISCORD_TOKEN)
+if not DISCORD_TOKEN:
+    print("Error: discord_token environment variable missing.")
+else:
+    client.run(DISCORD_TOKEN)
