@@ -1,14 +1,29 @@
+import os
+import sys
 import discord
 import requests
-import time
-import json
+import asyncio
+from flask import Flask
+from threading import Thread
 
-with open("DISCORD_TOKEN", "r") as f:
-    config = json.load(f)
+app = Flask('')
 
-DISCORD_TOKEN = config["DISCORD_TOKEN"]
-CHANNEL_ID = int(config["channel_id"])
-ADDRESS = config["account"]
+@app.route('/')
+def home():
+    return "Your service is live"
+
+def run_flask():
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
+
+DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
+ADDRESS = os.environ.get("account")
+channel_id_env = os.environ.get("channel_id")
+CHANNEL_ID = int(channel_id_env) if channel_id_env else None
+
+if not DISCORD_TOKEN or not CHANNEL_ID or not ADDRESS:
+    print("Error: Missing Environment Variables")
+    sys.exit(1)
 
 API = f"https://iost.io{ADDRESS}/transactions"
 
@@ -21,36 +36,58 @@ last_tx = None
 async def on_ready():
     global last_tx
     print(f"Logged in as {client.user}")
+    
     channel = client.get_channel(CHANNEL_ID)
+    if channel is None:
+        print(f"Error: Channel {CHANNEL_ID} not found.")
+        await client.close()
+        sys.exit(1)
 
     while True:
         try:
-            r = requests.get(API)
-            # यहाँ एरर को ठीक किया गया है:
-            data = r.json()
-            
-            txs = data.get("data", [])
-            if txs:
-                tx = txs[0]
-                txhash = tx.get("txhash")
+            r = requests.get(API, timeout=10)
+            if r.status_code == 200:
+                data = r.json()
+                txs = data.get("data", [])
+                
+                if txs and len(txs) > 0:
+                    tx = txs[0]
+                    txhash = tx.get("txhash")
 
-                if txhash != last_tx:
-                    last_tx = txhash
+                    if txhash != last_tx:
+                        if last_tx is None:
+                            last_tx = txhash
+                            print(f"Initial tx set to: {txhash}")
+                            continue
 
-                    amount = tx.get("amount")
-                    sender = tx.get("from")
-                    receiver = tx.get("to")
+                        last_tx = txhash
 
-                    await channel.send(
-                        f" New Deposit!\n"
-                        f"Amount: {amount}\n"
-                        f"From: {sender}\n"
-                        f"To: {receiver}\n"
-                        f"Tx: {txhash}"
-                    )
+                        amount = tx.get("amount")
+                        sender = tx.get("from")
+                        receiver = tx.get("to")
+
+                        await channel.send(
+                            f"🔔 **New Deposit Detected!**\n"
+                            f"📝 **Amount:** {amount}\n"
+                            f"📤 **From:** {sender}\n"
+                            f"📥 **To:** {receiver}\n"
+                            f"🔗 **Tx Hash:** {txhash}"
+                        )
+                        print(f"Alert sent for tx: {txhash}")
+            else:
+                print(f"API Error: Status code {r.status_code}")
+
         except Exception as e:
-            print(e)
+            print(f"Loop Exception: {e}")
 
-        time.sleep(10)
+        await asyncio.sleep(10)
 
-client.run(DISCORD_TOKEN)
+if __name__ == "__main__":
+    t = Thread(target=run_flask)
+    t.daemon = True
+    t.start()
+    
+    try:
+        client.run(DISCORD_TOKEN)
+    except discord.errors.LoginFailure:
+        print("Error: Invalid DISCORD_TOKEN")
