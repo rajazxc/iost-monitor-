@@ -6,7 +6,7 @@ from flask import Flask
 from threading import Thread
 from discord.ext import tasks
 
-# Fake web server for Render to stay online
+# Web server for Render to stay online
 app = Flask('')
 
 @app.route('/')
@@ -25,7 +25,6 @@ DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID = os.environ.get("channel_id")
 ADDRESS = os.environ.get("account")
 
-# Setup Gateway Intents
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
@@ -51,17 +50,28 @@ async def check_transactions():
         response = requests.get(url, timeout=10)
         
         if response.status_code == 200:
-            data = response.json()
-            txs = data.get("data", {}).get("txs", [])
+            raw_data = response.json()
             
-            if not txs:
+            txs = []
+            if isinstance(raw_data, dict):
+                txs = raw_data.get("data", [])
+                if isinstance(txs, dict): 
+                    txs = txs.get("txs", [])
+            elif isinstance(raw_data, list):
+                txs = raw_data
+
+            if not txs or not isinstance(txs, list):
                 return
                 
             latest_tx = txs[0]
             tx_hash = latest_tx.get("hash")
             
+            if not tx_hash:
+                return
+
             if last_tx_hash is None:
                 last_tx_hash = tx_hash
+                print(f"Baseline set. Latest TX Hash: {last_tx_hash}. Awaiting new live deposits...")
                 return
                 
             if tx_hash != last_tx_hash:
@@ -70,12 +80,12 @@ async def check_transactions():
                 channel = client.get_channel(int(CHANNEL_ID))
                 if channel:
                     embed = discord.Embed(title="💰 New Deposit Detected", color=0x00ff00)
-                    embed.add_field(name="To:", value=ADDRESS, inline=False)
-                    embed.add_field(name="Tx Hash:", value=f"[{tx_hash[:10]}...](https://iostabc.com{tx_hash})", inline=False)
+                    embed.add_field(name="To Account:", value=ADDRESS, inline=False)
+                    embed.add_field(name="Tx Hash:", value=f"[{tx_hash[:15]}...](https://iostabc.com{tx_hash})", inline=False)
                     embed.set_footer(text="IOST Monitor Bot")
                     
                     await channel.send(embed=embed)
-                    print(f"Notification sent for TX: {tx_hash}")
+                    print(f"Live alert dispatched successfully for TX: {tx_hash}")
                     
     except Exception as e:
         print(f"Error checking blockchain: {e}")
