@@ -15,7 +15,8 @@ async def on_ready():
     print(f"Logged in as {client.user}")
 
 if not DISCORD_TOKEN:
-    print("Error: discord_token environment variable missing.")
+    print(f"Bot failed to start. Error: {e}")
+ environment variable missing.")
 else:
     try:
         client.run(DISCORD_TOKEN)
