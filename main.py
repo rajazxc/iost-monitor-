@@ -3,7 +3,7 @@ import os
 import requests
 import json
 
-DISCORD_TOKEN = os.environ.get("discord_token")
+DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
 CHANNEL_ID = int(os.environ.get("channel_id", 0))
 ADDRESS = os.environ.get("account")
 
