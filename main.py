@@ -3,10 +3,10 @@ import requests
 import time
 import json
 
-with open("config.json", "r") as f:
+with open("DISCORD_TOKEN", "r") as f:
     config = json.load(f)
 
-DISCORD_TOKEN = config["discord_token"]
+DISCORD_TOKEN = config["DISCORD_TOKEN"]
 CHANNEL_ID = int(config["channel_id"])
 ADDRESS = config["account"]
 
