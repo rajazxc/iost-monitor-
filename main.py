@@ -30,7 +30,7 @@ if not DISCORD_TOKEN or not ADDRESS or not CHANNEL_ID:
 
 CHANNEL_ID = int(CHANNEL_ID)
 
-API = f"https://iostscan.com/en/account/iostcoinsa?activetab=1&listtab=0"
+API = f"https://l2-scan.iost.io/api/addresses/iostcoinsa/transactions"
 
 # ---------------- Discord ----------------
 
