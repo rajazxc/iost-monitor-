@@ -46,7 +46,7 @@ async def on_ready():
     print(f"Logged in as {client.user}")
 
     channel = await client.fetch_channel(CHANNEL_ID)
-
+await channel.send("✅ Bot is online!")
     while True:
         try:
             response = requests.get(API, timeout=10)
